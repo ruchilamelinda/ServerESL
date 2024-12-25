@@ -1,4 +1,4 @@
-const db = require('../config/db'); 
+const db = require('../config/config'); 
 
 //controller reschedule
 exports.getOrderDetails = async (req, res) => {

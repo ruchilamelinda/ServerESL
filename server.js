@@ -44,6 +44,18 @@ app.use('/api/status', rentalStatusRoutes);
 const rescheduleRoutes = require('./routes/rescheduleRoutes');
 app.use('/api', rescheduleRoutes);
 
+const propertiRoutes = require('./routes/properti.route');
+app.use('/api/properti', propertiRoutes);
+
+const penyewaanRoutes = require('./routes/penyewaan.route');
+app.use('/api/penyewaan', penyewaanRoutes);
+
+const ulasanRoutes = require('./routes/ulasan.route');
+app.use('/api/ulasan', ulasanRoutes);
+
+const profileUser = require('./routes/user.route');
+app.use('/api/user', profileUser);
+
 // Sinkronisasi Database
 sequelize.sync(false)
   .then(() => {

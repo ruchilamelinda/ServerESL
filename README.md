@@ -5,7 +5,7 @@
 1. **Clone repo**
 
    ```bash
-   git clone https://github.com/ruchilamelinda/serverESL?
+   git clone https://github.com/ruchilamelinda/serverESL
    ```
 
 2. **Cd ke folder project**

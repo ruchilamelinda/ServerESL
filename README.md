@@ -1,73 +1,56 @@
-Berikut adalah README untuk tata cara melakukan **pull** dan **push** dari GitHub ke Android Studio menggunakan repository [ESL](https://github.com/VioniWijaya/ESL).
+# Server ESL
 
----
+## Configurasi Project
 
-# Cara Pull dan Push dari GitHub ke Android Studio
+1. **Clone repo**
 
-Dokumentasi ini berisi langkah-langkah untuk melakukan **pull** (mengambil perubahan terbaru) dan **push** (mengirim perubahan) dari dan ke repository GitHub di Android Studio.
-
-## Prasyarat
-- **Android Studio** sudah terinstall
-- **Akun GitHub** sudah terhubung dengan Android Studio
-- **Git** sudah terinstall di sistem
-- **Access Permissions** untuk repository [ESL](https://github.com/VioniWijaya/ESL) (pastikan Anda memiliki akses push ke repository ini)
-
-## Clone Repository ESL (Langkah Awal)
-Jika Anda belum meng-clone repository ini, ikuti langkah berikut:
-1. **Buka Android Studio** dan pilih **Get from Version Control**.
-2. Masukkan URL repository:
+   ```bash
+   git clone https://github.com/ruchilamelinda/serverESL?
    ```
-   https://github.com/VioniWijaya/ESL.git
+
+2. **Cd ke folder project**
+
+   ```bash
+   cd serverESL
    ```
-3. Tentukan lokasi direktori proyek di perangkat Anda, lalu klik **Clone**.
-4. Tunggu hingga Android Studio selesai meng-clone proyek dan mengunduh dependensi yang diperlukan.
 
-## Langkah-langkah Pull dari GitHub
+3. **Install semua depedensi yang diperlukan**
 
-**Pull** digunakan untuk mengambil perubahan terbaru dari repository GitHub dan menyinkronkan dengan proyek lokal Anda.
+   ```bash
+   npm install
+   ```
 
-1. **Buka Proyek di Android Studio**:
-   - Pastikan Anda sudah membuka proyek **ESL** di Android Studio.
+4. **Hidupkan MySQL XAMPP dan buat database & setting koneksi db pada config/config.json**
 
-2. **Klik VCS (Version Control System)**:
-   - Di menu atas, pilih **VCS** > **Git** > **Pull**.
-   - Android Studio akan menampilkan jendela konfirmasi untuk **pull**.
+   ```bash
+   "development": {
+    "username": "root",
+    "password": null,
+    "database": "esl",
+    "host": "localhost",
+    "dialect": "mysql"
+   }
+   ```
 
-3. **Pilih Branch yang Akan di Pull**:
-   - Pilih branch yang akan di-pull (secara default adalah `main` atau `master`).
-   - Klik **Pull** untuk mengambil perubahan terbaru dari GitHub.
+5. **Lakukan migrasi tabel dari express ke database**
 
-4. **Selesaikan Konflik (Jika Ada)**:
-   - Jika ada konflik pada file yang Anda edit, Android Studio akan meminta Anda untuk menyelesaikan konflik tersebut.
-   - Ikuti instruksi di Android Studio untuk mengatasi konflik, kemudian lakukan **commit** ulang jika diperlukan.
+   ```bash
+   npx sequelize-cli db:migrate
+   ```
 
-## Langkah-langkah Push ke GitHub
+6. **Jalankan Express dan tailwind di 2 terminal berbeda dengan perintah**
 
-**Push** digunakan untuk mengirim perubahan dari proyek lokal Anda ke repository GitHub.
+    ```bash
+   npm run tail
+   npm run dev
+   ```
 
-1. **Commit Perubahan**:
-   - Sebelum melakukan **push**, pastikan semua perubahan Anda sudah di-commit.
-   - Pilih **VCS** > **Commit** atau klik ikon **Commit** di toolbar.
-   - Pilih file yang ingin Anda commit, tambahkan pesan commit yang mendeskripsikan perubahan Anda, lalu klik **Commit**.
-   - Jika diminta untuk **commit and push**, pilih **Commit and Push**.
+7. **Untuk push perubahan silahkan buatlah branch baru terlebih dahulu**
 
-2. **Push Perubahan ke GitHub**:
-   - Jika belum melakukan push, buka menu **VCS** > **Git** > **Push**.
-   - Android Studio akan menampilkan jendela konfirmasi untuk **push**.
-   - Periksa kembali branch dan perubahan yang akan dikirim, lalu klik **Push**.
-
-3. **Konfirmasi Push**:
-   - Android Studio akan mengirim perubahan Anda ke GitHub.
-   - Setelah push berhasil, Anda bisa memverifikasi perubahan di repository GitHub dengan membuka [repository ESL](https://github.com/VioniWijaya/ESL).
-
-## Troubleshooting
-- Jika Anda mengalami masalah autentikasi, periksa apakah akun GitHub sudah terhubung di Android Studio (`File` > `Settings` > `Version Control` > `GitHub`).
-- Jika ada konflik saat melakukan **push** atau **pull**, ikuti instruksi resolusi konflik di Android Studio atau gunakan Git di command line untuk penyelesaian lebih lanjut.
-
-## Tips
-- **Lakukan Pull secara Berkala**: Sebelum melakukan **push**, selalu lakukan **pull** untuk memastikan Anda bekerja dengan versi terbaru dari repository.
-- **Gunakan Branch untuk Pengembangan Baru**: Jika Anda mengerjakan fitur baru, sebaiknya buat branch baru untuk menghindari konflik di branch utama.
-
---- 
-
-README ini memberikan langkah-langkah dasar untuk sinkronisasi dengan GitHub dari Android Studio.
+   ```bash
+   git branch (namaBranch)//buat branch baru
+   git checkout namaBranch
+   git add .
+   git commit -m "pesan"
+   git push -u origin namaBranch
+   ```

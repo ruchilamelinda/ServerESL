@@ -7,14 +7,13 @@ router.get('/', async (req, res) => {
     try {console.log("aa status da?");
     
         const rentals = await Penyewaan.findAll({
-            where: { status: "Selesai" }, // Sequelize syntax for where clause
+            where: { status: "Selesai" },
             include: [{
-                model: Properti, // Join with the Properti model
-                attributes: ['id_properti', 'nama_properti', 'pemilik'] // Select specific fields
+                model: Properti, 
+                attributes: ['id_properti', 'nama_properti', 'pemilik'] 
             }]
         });
 
-//format yg dikirim
         const formattedRentals = rentals.map((rental) => ({
             id_penyewaan: rental.id, 
             id_properti: rental.Properti?.id_properti || "Tidak diketahui",

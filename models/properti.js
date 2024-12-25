@@ -4,11 +4,6 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Properti extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       Properti.hasMany(models.Favorit, { foreignKey: 'id_properti' });
       Properti.hasMany(models.Penyewaan, { foreignKey: 'id_properti' });

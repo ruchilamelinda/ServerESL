@@ -1,5 +1,7 @@
 'use strict';
 /** @type {import('sequelize-cli').Migration} */
+
+//tabel properti
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Propertis', {

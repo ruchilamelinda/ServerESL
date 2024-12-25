@@ -15,7 +15,6 @@ router.get('/', async (req, res) => {
             }]
         });
 
-        // Format data yang dikirimkan
         const formattedStatus = status.map((status) => ({
             id_properti: status.Properti?.id_properti || "Tidak diketahui",
             status: status.status,
@@ -24,7 +23,7 @@ router.get('/', async (req, res) => {
             nama_properti: status.Properti?.nama_properti || "Tidak diketahui",
         }));
 
-        res.json(formattedStatus); // Kirim data dalam format JSON
+        res.json(formattedStatus);
     } catch (error) {
         console.error("Error fetching rental statuses:", error.message);
         res.status(500).json({ message: 'Server Error', error: error.message });

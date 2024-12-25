@@ -1,6 +1,6 @@
 const db = require('../config/db'); 
 
-
+//controller reschedule
 exports.getOrderDetails = async (req, res) => {
     const { idPenyewaan, idProperti } = req.params;
 

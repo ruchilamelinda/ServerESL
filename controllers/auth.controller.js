@@ -8,7 +8,7 @@ const User = require('../models').Users;
 // Register User
 
 
-// Login User
+//controller login
 exports.login = async (req, res) => {
     try {
         const { username, password } = req.body;

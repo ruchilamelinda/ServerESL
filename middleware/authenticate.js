@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-// Middleware untuk verifikasi token JWT
+// token login
 const authenticateJWT = (req, res, next) => {
     const token = req.headers.authorization && req.headers.authorization.split(' ')[1]; // Token dikirim via header Authorization: Bearer <token>
 

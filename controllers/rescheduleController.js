@@ -91,7 +91,6 @@ exports.updateTanggalMulai = async (req, res) => {
             });
         }
 
-        // Tambahkan masaSewa ke tanggalMulai untuk mendapatkan tanggalAkhir
         const tanggalAkhir = new Date(tanggalMulaiDate);
         tanggalAkhir.setDate(tanggalMulaiDate.getDate() + parseInt(masaSewa, 10)); // Tambah masaSewa (jumlah hari)
         console.log(tanggalAkhir);
@@ -103,7 +102,7 @@ exports.updateTanggalMulai = async (req, res) => {
             tanggalAkhir: tanggalAkhir
         }, {
             where: {
-                id_penyewaan: id_penyewaan // Gunakan id_penyewaan dari params
+                id_penyewaan: id_penyewaan 
             }
         });
 

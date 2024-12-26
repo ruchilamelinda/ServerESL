@@ -1,38 +1,42 @@
 const db = require('../config/config'); 
+const express = require('express');
+const {
+    Sequelize
+} = require('sequelize');
+const { Penyewaan } = require('../models'); // Pastikan nama model benar
+const { Properti } = require('../models');
 
 //controller reschedule
 exports.getOrderDetails = async (req, res) => {
-    const { idPenyewaan, idProperti } = req.params;
+    const { id_penyewaan } = req.params;
 
     try {
         // Query penyewaan
-        const penyewaanResult = await db.query(
-            'SELECT tanggalMulai, masaSewa FROM penyewaan WHERE id = ?',
-            [idPenyewaan]
-        );
+        const penyewaanResult = await Penyewaan.findOne({
+            where: { 
+                id_penyewaan: id_penyewaan }, 
+            include: [{
+                model: Properti, 
+                attributes: ['nama_properti', 'jenis_properti', 'lokasi']
+            }]
+        });
 
         // Query properti
-        const propertiResult = await db.query(
-            'SELECT nama_properti, jenis_properti, hargaSewa FROM properti WHERE id = ?',
-            [idProperti]
-        );
+      
 
-        if (penyewaanResult.length === 0 || propertiResult.length === 0) {
+        if (!penyewaanResult) {
             return res.status(404).json({ message: 'Data tidak ditemukan' });
         }
 
-        const penyewaan = penyewaanResult[0];
-        const properti = propertiResult[0];
-
-        // Hitung total harga sewa
-        const totalHarga = properti.hargaSewa * penyewaan.masaSewa;
+        // const penyewaan = penyewaanResult[0];
 
         res.json({
-            tanggalMulai: penyewaan.tanggalMulai,
-            masaSewa: penyewaan.masaSewa,
-            namaProperti: properti.nama_properti,
-            jenisProperti: properti.jenis_properti,
-            hargaSewa: totalHarga,
+            tanggalMulai: penyewaanResult.tanggalMulai,
+            tanggalAkhir: penyewaanResult.tanggalAkhir,
+            masaSewa: penyewaanResult.masaSewa,
+            namaProperti: penyewaanResult.Properti.nama_properti,
+            jenisProperti: penyewaanResult.Properti.jenis_properti,
+            lokasi: penyewaanResult.Properti.lokasi,
         });
     } catch (error) {
         console.error('Error fetching order details:', error);
@@ -42,16 +46,48 @@ exports.getOrderDetails = async (req, res) => {
 
 // Controller untuk memperbarui tanggal mulai
 exports.updateTanggalMulai = async (req, res) => {
-    const { idPenyewaan } = req.params;
-    const { tanggalMulai } = req.body;
+    const { tanggalMulai, masaSewa } = req.body;
 
     try {
-        await db.query(
-            'UPDATE penyewaan SET tanggalMulai = ? WHERE id = ?',
-            [tanggalMulai, idPenyewaan]
+        const id_penyewaan = parseInt(req.params.id_penyewaan, 10);
+
+        console.log("yang didapat dari android", tanggalMulai, masaSewa);
+        console.log("idpenyewaannya", id_penyewaan);
+        
+        // Pastikan format tanggal adalah YYYY-MM-DD
+        const tanggalMulaiDate = new Date(tanggalMulai); // Gunakan format YYYY-MM-DD
+
+        if (isNaN(tanggalMulaiDate.getTime())) {
+            return res.status(400).json({ message: 'Format tanggal tidak valid' });
+        }
+
+        // Tambahkan masaSewa ke tanggalMulai untuk mendapatkan tanggalAkhir
+        const tanggalAkhir = new Date(tanggalMulaiDate);
+        tanggalAkhir.setDate(tanggalMulaiDate.getDate() + parseInt(masaSewa, 10)); // Tambah masaSewa (jumlah hari)
+        console.log(tanggalAkhir);
+
+        // Update penyewaan di database
+        const [hasilReschedule] = await Penyewaan.update(
+            {
+                tanggalMulai: tanggalMulaiDate,
+                masaSewa: masaSewa,
+                tanggalAkhir: tanggalAkhir
+            },
+            {
+                where: {
+                    id_penyewaan: id_penyewaan // Gunakan id_penyewaan dari params
+                }
+            }
         );
 
-        res.json({ message: 'Tanggal mulai berhasil diperbarui' });
+        if (hasilReschedule > 0) {
+            console.log("Berhasil Direschedule");
+            res.json({ message: 'Berhasil Direschedule' });
+        } else {
+            console.log("Gagal Direschedule, id_penyewaan tidak ditemukan atau tidak ada perubahan");
+            res.status(404).json({ message: 'Data tidak ditemukan atau tidak ada perubahan' });
+        }
+        
     } catch (error) {
         console.error('Error updating start date:', error);
         res.status(500).json({ message: 'Server error' });

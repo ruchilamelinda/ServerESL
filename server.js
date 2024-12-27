@@ -56,6 +56,12 @@ app.use('/api/ulasan', ulasanRoutes);
 const profileUser = require('./routes/user.route');
 app.use('/api/user', profileUser);
 
+const problem = require('./routes/reportProblemRoute');
+app.use('/api/problem', problem);
+
+const favorite = require('./routes/rentalFavorite');
+app.use('/api/favorite', favorite);
+
 // Sinkronisasi Database
 sequelize.sync(false)
   .then(() => {

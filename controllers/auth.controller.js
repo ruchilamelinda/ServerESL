@@ -1,9 +1,10 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { Sequelize } = require('sequelize');
-
-
+const {
+    Sequelize
+} = require('sequelize');
 const User = require('../models').Users;
+
 
 // Register User
 exports.register = async (req, res) => {
@@ -65,7 +66,8 @@ exports.register = async (req, res) => {
     }
 };
 
-//controller login
+
+// Login User
 exports.login = async (req, res) => {
     try {
         const {
@@ -111,7 +113,7 @@ exports.login = async (req, res) => {
                 message: 'Login berhasil',
                 token,
                 user: {
-                    id: user.id,
+                    id: user.id_users,
                     nama: user.nama,
                     no_Hp: user.no_Hp,
                     email: user.email,
@@ -128,5 +130,3 @@ exports.login = async (req, res) => {
         });
     }
 };
-
-

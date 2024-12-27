@@ -75,9 +75,6 @@ exports.updateTanggalMulai = async (req, res) => {
         id_penyewaanParams = parseInt(id_penyewaanParams, 10);
 
         console.log("idpenyewaannya yangdihapus", id_penyewaanParams);
-
-
-
         console.log("yang didapat dari android", tanggalMulai, masaSewa);
         console.log("idpenyewaannya yang parseInt", id_penyewaanInt);
         console.log("idpenyewaannya yang langsung", id_penyewaan);

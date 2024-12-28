@@ -3,6 +3,8 @@ const {Penyewaan} = require('../models');
 const moment = require('moment');
 const {Properti} = require('../models');
 const router = express.Router();
+const authenticateJWT = require('../middleware/authenticate');
+
 
 
   router.post('/', async (req, res) => {
@@ -33,39 +35,51 @@ const router = express.Router();
     }
   });
 
-// Endpoint untuk membatalkan penyewaan
-router.post('/batal', async (req, res) => {
+// Endpoint untuk pembatalan penyewaan
+router.post('/:id_penyewaan/cancel', authenticateJWT, async (req, res) => {
   try {
-    const { id_penyewaan, alasan_batal } = req.body;
+      const { id_penyewaan } = req.params;
+      const { alasan_batal } = req.body;
+      const userId = req.user.id;
 
-    if (!id_penyewaan || !alasan_batal) {
-      return res.status(400).json({ message: 'ID penyewaan dan alasan pembatalan harus diisi' });
-    }
+      // Cek apakah penyewaan ada dan milik user yang bersangkutan
+      const penyewaan = await Penyewaan.findOne({
+          where: {
+              id_penyewaan: id_penyewaan,
+              id_users: userId,
+              status: 'Aktif' // Pastikan status masih aktif
+          }
+      });
 
-    // Cari penyewaan berdasarkan ID
-    const penyewaan = await Penyewaan.findByPk(id_penyewaan);
+      if (!penyewaan) {
+          return res.status(404).json({
+              success: false,
+              message: 'Penyewaan tidak ditemukan atau tidak dapat dibatalkan'
+          });
+      }
 
-    if (!penyewaan) {
-      return res.status(404).json({ message: 'Penyewaan tidak ditemukan' });
-    }
-
-    if (penyewaan.status !== 'Aktif') {
-      return res.status(400).json({ message: 'Penyewaan sudah dibatalkan atau selesai' });
-    }
-
-    // Update status penyewaan menjadi "batal" dan simpan alasan pembatalan
-    penyewaan.status = 'Dibatalkan';
-    penyewaan.alasan_batal = alasan_batal;
-    await penyewaan.save();
-
-    res.status(200).json({ 
-      success: true,
-      message: 'Penyewaan berhasil dibatalkan',
-      data: penyewaan 
+      // Update status penyewaan
+      await penyewaan.update({
+        status: 'Dibatalkan', // Pastikan status sesuai ENUM
+        alasan_batal: alasan_batal, // Gunakan nama kolom yang benar
     });
+    
+
+      res.json({
+          success: true,
+          message: 'Penyewaan berhasil dibatalkan',
+          data: penyewaan
+      });
+
   } catch (error) {
-    res.status(400).json({ message: 'Gagal membatalkan penyewaan', error: error.message });
+      console.error('Error dalam pembatalan:', error);
+      res.status(500).json({
+          success: false,
+          message: 'Terjadi kesalahan saat membatalkan penyewaan',
+          error: error.message
+      });
   }
 });
+
 
 module.exports = router;

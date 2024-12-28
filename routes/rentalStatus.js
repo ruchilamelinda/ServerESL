@@ -34,4 +34,44 @@ router.get('/',authenticateJWT, async (req, res) => {
     }
 });
 
+// Add to your existing status router (status.js)
+// router.put('/cancel/:id', authenticateJWT, async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         const { alasan_batal } = req.body;
+//         const userId = req.user.id;
+
+//         const penyewaan = await Penyewaan.findOne({
+//             where: {
+//                 id_penyewaan: id,
+//                 id_users: userId,
+//                 status: 'Aktif'
+//             }
+//         });
+
+//         if (!penyewaan) {
+//             return res.status(404).json({
+//                 message: 'Penyewaan tidak ditemukan atau tidak dapat dibatalkan'
+//             });
+//         }
+
+//         await penyewaan.update({
+//             status: 'Dibatalkan',
+//             alasan_batal: alasan_batal
+//         });
+
+//         res.json({
+//             message: 'Penyewaan berhasil dibatalkan',
+//             status: 'Dibatalkan'
+//         });
+
+//     } catch (error) {
+//         console.error("Error canceling rental:", error.message);
+//         res.status(500).json({
+//             message: 'Server Error',
+//             error: error.message
+//         });
+//     }
+// });
+
 module.exports = router;

@@ -2,21 +2,23 @@ const jwt = require('jsonwebtoken');
 
 // token login
 const authenticateJWT = (req, res, next) => {
-    const token = req.headers.authorization && req.headers.authorization.split(' ')[1]; // Token dikirim via header Authorization: Bearer <token>
-    console.log("token", token);
+    console.log('Headers:', req.headers); // Log semua header permintaan
+    const token = req.headers.authorization && req.headers.authorization.split(' ')[1]; 
+    console.log('Extracted Token:', token);
     
     if (!token) {
         return res.status(401).json({ message: 'Akses ditolak, token tidak ditemukan' });
     }
 
-    // Verifikasi token
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) {
+            console.error('JWT Error:', err.message); // Log kesalahan JWT
             return res.status(403).json({ message: 'Token tidak valid' });
         }
 
-        req.user = user; // Tambahkan data user ke dalam request
-        next(); // Lanjutkan ke route berikutnya
+        console.log('Decoded User:', user); // Log data user dari token
+        req.user = user; 
+        next(); 
     });
 };
 

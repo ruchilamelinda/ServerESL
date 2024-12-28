@@ -54,7 +54,7 @@ const ulasanRoutes = require('./routes/ulasan.route');
 app.use('/api/ulasan', ulasanRoutes);
 
 const profileUser = require('./routes/user.route');
-app.use('/api/user', profileUser);
+app.use('/api/profile', profileUser);
 
 const problem = require('./routes/reportProblemRoute');
 app.use('/api/problem', problem);

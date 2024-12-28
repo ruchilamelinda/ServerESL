@@ -4,6 +4,36 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const { Users } = require('../models');
+const authenticateJWT = require('../middleware/authenticate');
+
+
+router.get('/', authenticateJWT, async (req, res) => {
+  try {
+      const userId = req.user.id; // Ambil ID pengguna dari token JWT
+      console.log(userId, "Fetching user profile");
+
+      // Cari pengguna berdasarkan ID
+      const user = await Users.findOne({
+          where: { id: userId },
+          attributes: ['username', 'nama'] // Kolom yang ingin diambil
+      });
+
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Format data profil pengguna
+      const formattedProfile = {
+          username: user.username || "Tidak diketahui",
+          nama: user.nama || "Tidak diketahui"
+      };
+
+      res.json(formattedProfile);
+
+  } catch (error) {
+      res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+});
 
 
 // Multer setup

@@ -14,14 +14,16 @@ router.get('/',authenticateJWT, async (req, res) => {
             where:{id_users: userId},
             include:[{
                 model:Properti,
-                attributes: ['nama_properti', 'pemilik', 'hargaSewa']
+                attributes: ['nama_properti', 'pemilik', 'hargaSewa', 'lokasi']
             }]
         });
 
         const formattedFavorite = favorite.map((favorite) => ({
             id_favorite: favorite.id_favorite || "Tidak diketahui",
+            id_properti: favorite.id_properti || "Tidak diketahui",
             nama_properti: favorite.Properti?.nama_properti || "Tidak diketahui",
             pemilik: favorite.Properti?.pemilik || "Tidak diketahui",
+            lokasi: favorite.Properti?.lokasi || "Tidak diketahui",
             hargaSewa: favorite.Properti?.hargaSewa || "Tidak diketahui",
         }));
         res.json(formattedFavorite);
